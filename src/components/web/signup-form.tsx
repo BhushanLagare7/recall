@@ -1,3 +1,4 @@
+import { useTransition } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 
@@ -26,6 +27,7 @@ import { authClient } from '@/lib/auth-client'
 
 export function SignupForm() {
   const navigate = useNavigate()
+  const [isPending, startTransition] = useTransition()
 
   const form = useForm({
     defaultValues: {
@@ -36,21 +38,22 @@ export function SignupForm() {
     validators: {
       onSubmit: signupSchema,
     },
-    onSubmit: async ({ value }) => {
-      await authClient.signUp.email({
-        name: value.fullName,
-        email: value.email,
-        password: value.password,
-        // callbackURL: '/dashboard',
-        fetchOptions: {
-          onSuccess: () => {
-            toast.success('Account created successfully')
-            navigate({ to: '/' })
+    onSubmit: ({ value }) => {
+      startTransition(async () => {
+        await authClient.signUp.email({
+          name: value.fullName,
+          email: value.email,
+          password: value.password,
+          fetchOptions: {
+            onSuccess: () => {
+              toast.success('Account created successfully')
+              navigate({ to: '/dashboard' })
+            },
+            onError: ({ error }) => {
+              toast.error(error.message)
+            },
           },
-          onError: ({ error }) => {
-            toast.error(error.message)
-          },
-        },
+        })
       })
     },
   })
@@ -150,9 +153,12 @@ export function SignupForm() {
             />
             <FieldGroup>
               <Field>
-                <Button type="submit" disabled={form.state.isSubmitting}>
-                  {form.state.isSubmitting
-                    ? 'Creating Account...'
+                <Button
+                  type="submit"
+                  disabled={isPending || form.state.isSubmitting}
+                >
+                  {isPending || form.state.isSubmitting
+                    ? 'Creating...'
                     : 'Create Account'}
                 </Button>
                 <FieldDescription className="px-6 text-center">
