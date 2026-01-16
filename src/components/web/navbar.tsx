@@ -58,8 +58,7 @@ export const Navbar = () => {
               >
                 Logout
               </Button>
-              {/* TODO: Add a link to the dashboard */}
-              <Link to="/" className={buttonVariants()}>
+              <Link to="/dashboard" className={buttonVariants()}>
                 Dashboard
               </Link>
             </>

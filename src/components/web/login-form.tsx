@@ -1,3 +1,4 @@
+import { useTransition } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 
@@ -25,6 +26,7 @@ import { authClient } from '@/lib/auth-client'
 
 export function LoginForm() {
   const navigate = useNavigate()
+  const [isPending, startTransition] = useTransition()
 
   const form = useForm({
     defaultValues: {
@@ -34,19 +36,21 @@ export function LoginForm() {
     validators: {
       onSubmit: loginSchema,
     },
-    onSubmit: async ({ value }) => {
-      await authClient.signIn.email({
-        email: value.email,
-        password: value.password,
-        fetchOptions: {
-          onSuccess: () => {
-            toast.success('Logged in successfully')
-            navigate({ to: '/' })
+    onSubmit: ({ value }) => {
+      startTransition(async () => {
+        await authClient.signIn.email({
+          email: value.email,
+          password: value.password,
+          fetchOptions: {
+            onSuccess: () => {
+              toast.success('Logged in successfully')
+              navigate({ to: '/dashboard' })
+            },
+            onError: ({ error }) => {
+              toast.error(error.message)
+            },
           },
-          onError: ({ error }) => {
-            toast.error(error.message)
-          },
-        },
+        })
       })
     },
   })
@@ -120,8 +124,13 @@ export function LoginForm() {
               }}
             />
             <Field>
-              <Button type="submit" disabled={form.state.isSubmitting}>
-                {form.state.isSubmitting ? 'Logging in...' : 'Login'}
+              <Button
+                type="submit"
+                disabled={isPending || form.state.isSubmitting}
+              >
+                {isPending || form.state.isSubmitting
+                  ? 'Logging in...'
+                  : 'Login'}
               </Button>
               <FieldDescription className="text-center">
                 Don&apos;t have an account? <Link to="/signup">Sign up</Link>
