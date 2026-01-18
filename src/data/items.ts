@@ -1,3 +1,4 @@
+import { notFound } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 
 import * as z from 'zod'
@@ -161,4 +162,37 @@ export const bulkScrapeUrlFn = createServerFn({ method: 'POST' })
     )
 
     return items
+  })
+
+export const getItemsFn = createServerFn({ method: 'GET' })
+  .middleware([authFnMiddleware])
+  .handler(async ({ context }) => {
+    const items = await prisma.savedItem.findMany({
+      where: {
+        userId: context.session.user.id,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+
+    return items
+  })
+
+export const getItemByIdFn = createServerFn({ method: 'GET' })
+  .middleware([authFnMiddleware])
+  .inputValidator(z.object({ id: z.string() }))
+  .handler(async ({ data, context }) => {
+    const item = await prisma.savedItem.findUnique({
+      where: {
+        userId: context.session.user.id,
+        id: data.id,
+      },
+    })
+
+    if (!item) {
+      throw notFound()
+    }
+
+    return item
   })

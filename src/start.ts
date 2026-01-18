@@ -8,7 +8,7 @@ const loggingMiddleware = createMiddleware({ type: 'request' }).server(
     const url = new URL(request.url)
 
     console.log(
-      `[${new Date().toISOString()}] ${request.method} ${url.pathname}`,
+      `[${new Date().toISOString()}] ${request.method} ${url.pathname}${url.search}`,
     )
 
     return next()

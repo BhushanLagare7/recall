@@ -36,8 +36,9 @@ function RouteComponent() {
   const [discoveredLinks, setDiscoveredLinks] = useState<SearchResultWeb[]>([])
   const [selectedUrls, setSelectedUrls] = useState<Set<string>>(new Set())
 
-  const [isPending, startTransition] = useTransition()
+  const [isPendingSingle, startTransitionSingle] = useTransition()
   const [isPendingBulk, startTransitionBulk] = useTransition()
+  const [isPendingBulkImport, startTransitionBulkImport] = useTransition()
 
   const form = useForm({
     defaultValues: {
@@ -47,7 +48,7 @@ function RouteComponent() {
       onSubmit: importSchema,
     },
     onSubmit: ({ value }) => {
-      startTransition(async () => {
+      startTransitionSingle(async () => {
         await scrapeUrlFn({ data: value })
         toast.success('URL scraped successfully')
       })
@@ -63,7 +64,7 @@ function RouteComponent() {
       onSubmit: bulkImportSchema,
     },
     onSubmit: ({ value }) => {
-      startTransition(async () => {
+      startTransitionBulk(async () => {
         const data = await mapUrlFn({ data: value })
         setDiscoveredLinks(data)
         toast.success('URLs mapped successfully')
@@ -99,7 +100,7 @@ function RouteComponent() {
       return
     }
 
-    startTransitionBulk(async () => {
+    startTransitionBulkImport(async () => {
       const data = await bulkScrapeUrlFn({
         data: { urls: Array.from(selectedUrls) },
       })
@@ -176,8 +177,8 @@ function RouteComponent() {
                       }}
                     />
 
-                    <Button type="submit" disabled={isPending}>
-                      {isPending ? (
+                    <Button type="submit" disabled={isPendingSingle}>
+                      {isPendingSingle ? (
                         <>
                           <Loader2Icon className="animate-spin size-4" />
                           Processing...
@@ -268,8 +269,8 @@ function RouteComponent() {
                       }}
                     />
 
-                    <Button type="submit" disabled={isPending}>
-                      {isPending ? (
+                    <Button type="submit" disabled={isPendingBulk}>
+                      {isPendingBulk ? (
                         <>
                           <Loader2Icon className="animate-spin size-4" />
                           Processing...
@@ -327,10 +328,10 @@ function RouteComponent() {
                     <Button
                       className="w-full"
                       onClick={handleBulkImport}
-                      disabled={isPendingBulk}
+                      disabled={isPendingBulkImport}
                       type="button"
                     >
-                      {isPendingBulk ? (
+                      {isPendingBulkImport ? (
                         <>
                           <Loader2Icon className="animate-spin size-4" />
                           Processing...
