@@ -23,7 +23,7 @@ export const authMiddleware = createMiddleware({ type: 'request' }).server(
     // Skip auth for non-dashboard and non-api routes
     if (
       !url.pathname.startsWith('/dashboard') &&
-      !url.pathname.startsWith('/api')
+      !url.pathname.startsWith('/api/ai')
     ) {
       return next()
     }
