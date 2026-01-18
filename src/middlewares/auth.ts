@@ -20,8 +20,11 @@ export const authMiddleware = createMiddleware({ type: 'request' }).server(
   async ({ next, request }) => {
     const url = new URL(request.url)
 
-    // Skip auth for non-dashboard routes
-    if (!url.pathname.startsWith('/dashboard')) {
+    // Skip auth for non-dashboard and non-api routes
+    if (
+      !url.pathname.startsWith('/dashboard') &&
+      !url.pathname.startsWith('/api')
+    ) {
       return next()
     }
 
@@ -31,6 +34,6 @@ export const authMiddleware = createMiddleware({ type: 'request' }).server(
       throw redirect({ to: '/login' })
     }
 
-    return next()
+    return next({ context: { session } })
   },
 )
