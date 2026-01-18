@@ -7,7 +7,12 @@ import { zodValidator } from '@tanstack/zod-adapter'
 
 import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 import { getItemsFn } from '@/data/items'
 
@@ -123,15 +128,17 @@ function ItemsList({
             params={{ itemId: item.id }}
             className="block"
           >
-            {item.ogImage && (
-              <div className="overflow-hidden w-full aspect-video bg-muted">
-                <img
-                  src={item.ogImage}
-                  alt={item.title ?? 'Thumbnail'}
-                  className="object-cover transition-transform size-full group-hover:scale-105"
-                />
-              </div>
-            )}
+            <div className="overflow-hidden w-full aspect-video bg-muted">
+              <img
+                src={
+                  item.ogImage ??
+                  'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1429&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                }
+                alt={item.title ?? 'Thumbnail'}
+                className="object-cover transition-transform size-full group-hover:scale-105"
+              />
+            </div>
+
             <CardHeader className="pt-4 space-y-3">
               <div className="flex gap-2 justify-between items-center">
                 <Badge
@@ -160,6 +167,21 @@ function ItemsList({
               {item.author && (
                 <p className="text-xs text-muted-foreground">{item.author}</p>
               )}
+              {item.summary && (
+                <CardDescription className="text-sm line-clamp-3">
+                  {item.summary}
+                </CardDescription>
+              )}
+              {/* Tags */}
+              {item.tags && item.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 pt-2">
+                  {item.tags.slice(0, 4).map((tag, index) => (
+                    <Badge key={index} variant="secondary">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </CardHeader>
           </Link>
         </Card>
@@ -172,6 +194,21 @@ export const Route = createFileRoute('/dashboard/items/')({
   component: RouteComponent,
   loader: () => ({ itemsPromise: getItemsFn() }),
   validateSearch: zodValidator(itemSearchSchema),
+  head: () => ({
+    meta: [
+      {
+        title: 'Saved Items',
+      },
+      {
+        property: 'og:title',
+        content: 'Saved Items',
+      },
+      {
+        property: 'og:description',
+        content: 'Your saved articles and content!',
+      },
+    ],
+  }),
 })
 
 function RouteComponent() {
