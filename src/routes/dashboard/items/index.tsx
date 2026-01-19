@@ -1,9 +1,14 @@
 import { Suspense, use, useEffect, useState } from 'react'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-
-import * as z from 'zod'
-import { CopyIcon, InboxIcon } from 'lucide-react'
 import { zodValidator } from '@tanstack/zod-adapter'
+
+import { CopyIcon, InboxIcon } from 'lucide-react'
+import * as z from 'zod'
+
+import { getItemsFn } from '@/data/items'
+import { ItemStatus } from '@/generated/prisma/enums'
+
+import { copyToClipboard } from '@/lib/copyToClipboard'
 
 import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -13,18 +18,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-
-import { getItemsFn } from '@/data/items'
-
-import { copyToClipboard } from '@/lib/copyToClipboard'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import {
   Empty,
   EmptyContent,
@@ -33,8 +26,14 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/components/ui/empty'
-
-import { ItemStatus } from '@/generated/prisma/enums'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 
 function ItemsListSkeleton() {
@@ -81,7 +80,7 @@ function ItemsList({
     const matchesQuery =
       q === '' ||
       item.title?.toLowerCase().includes(q.toLowerCase()) ||
-      item.tags?.some((tag) => tag.toLowerCase().includes(q.toLowerCase()))
+      item.tags.some((tag) => tag.toLowerCase().includes(q.toLowerCase()))
 
     // Check if item matches status filter
     const matchesStatus = status === 'all' || item.status === status
@@ -107,7 +106,7 @@ function ItemsList({
         </EmptyHeader>
         {items.length === 0 && (
           <EmptyContent>
-            <Link to="/dashboard/import" className={buttonVariants()}>
+            <Link className={buttonVariants()} to="/dashboard/import">
               Import URL
             </Link>
           </EmptyContent>
@@ -124,18 +123,18 @@ function ItemsList({
           className="overflow-hidden pt-0 transition-all group hover:shadow-lg"
         >
           <Link
-            to="/dashboard/items/$itemId"
-            params={{ itemId: item.id }}
             className="block"
+            params={{ itemId: item.id }}
+            to="/dashboard/items/$itemId"
           >
             <div className="overflow-hidden w-full aspect-video bg-muted">
               <img
+                alt={item.title ?? 'Thumbnail'}
+                className="object-cover transition-transform size-full group-hover:scale-105"
                 src={
                   item.ogImage ??
                   'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1429&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                 }
-                alt={item.title ?? 'Thumbnail'}
-                className="object-cover transition-transform size-full group-hover:scale-105"
               />
             </div>
 
@@ -149,9 +148,9 @@ function ItemsList({
                   {item.status.toLowerCase()}
                 </Badge>
                 <Button
-                  variant="outline"
-                  size="icon"
                   className="size-8"
+                  size="icon"
+                  variant="outline"
                   onClick={async (e) => {
                     e.stopPropagation()
                     e.preventDefault()
@@ -173,7 +172,7 @@ function ItemsList({
                 </CardDescription>
               )}
               {/* Tags */}
-              {item.tags && item.tags.length > 0 && (
+              {item.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 pt-2">
                   {item.tags.slice(0, 4).map((tag, index) => (
                     <Badge key={index} variant="secondary">
@@ -256,16 +255,17 @@ function RouteComponent() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>
-            {Object.values(ItemStatus).map((status) => (
-              <SelectItem key={status} value={status}>
-                {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
+            {Object.values(ItemStatus).map((itemStatus) => (
+              <SelectItem key={itemStatus} value={itemStatus}>
+                {itemStatus.charAt(0).toUpperCase() +
+                  itemStatus.slice(1).toLowerCase()}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
       <Suspense fallback={<ItemsListSkeleton />}>
-        <ItemsList q={q} status={status} data={itemsPromise} />
+        <ItemsList data={itemsPromise} q={q} status={status} />
       </Suspense>
     </div>
   )

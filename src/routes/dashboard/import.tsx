@@ -2,11 +2,20 @@ import { useState, useTransition } from 'react'
 import { useForm } from '@tanstack/react-form'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { toast } from 'sonner'
-import { type SearchResultWeb } from '@mendable/firecrawl-js'
 import { GlobeIcon, LinkIcon, Loader2Icon } from 'lucide-react'
+import { toast } from 'sonner'
+import type {SearchResultWeb} from '@mendable/firecrawl-js';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import type {
+  BulkScrapeProgress} from '@/data/items';
+import {
+  bulkScrapeUrlsFn,
+  mapUrlFn,
+  scrapeUrlFn,
+} from '@/data/items'
+import { bulkImportSchema, importSchema } from '@/schemas/import'
+
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -14,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Field,
   FieldError,
@@ -21,25 +31,15 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-
-import {
-  bulkScrapeUrlsFn,
-  mapUrlFn,
-  scrapeUrlFn,
-  BulkScrapeProgress,
-} from '@/data/items'
-
-import { bulkImportSchema, importSchema } from '@/schemas/import'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export const Route = createFileRoute('/dashboard/import')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [discoveredLinks, setDiscoveredLinks] = useState<SearchResultWeb[]>([])
+  const [discoveredLinks, setDiscoveredLinks] = useState<Array<SearchResultWeb>>([])
   const [selectedUrls, setSelectedUrls] = useState<Set<string>>(new Set())
   const [progress, setProgress] = useState<BulkScrapeProgress | null>(null)
 
@@ -151,11 +151,11 @@ function RouteComponent() {
 
         <Tabs defaultValue="single">
           <TabsList className="grid grid-cols-2 w-full">
-            <TabsTrigger value="single" className="gap-2">
+            <TabsTrigger className="gap-2" value="single">
               <LinkIcon className="size-4" />
               Single URL
             </TabsTrigger>
-            <TabsTrigger value="bulk" className="gap-2">
+            <TabsTrigger className="gap-2" value="bulk">
               <GlobeIcon className="size-4" />
               Bulk Import
             </TabsTrigger>
@@ -178,7 +178,6 @@ function RouteComponent() {
                 >
                   <FieldGroup>
                     <form.Field
-                      name="url"
                       children={(field) => {
                         const isInvalid =
                           field.state.meta.isTouched &&
@@ -187,17 +186,17 @@ function RouteComponent() {
                           <Field data-invalid={isInvalid}>
                             <FieldLabel htmlFor={field.name}>URL</FieldLabel>
                             <Input
+                              aria-invalid={isInvalid}
+                              autoComplete="off"
                               id={field.name}
                               name={field.name}
+                              placeholder="https://example.com"
+                              type="url"
                               value={field.state.value}
                               onBlur={field.handleBlur}
                               onChange={(e) =>
                                 field.handleChange(e.target.value)
                               }
-                              aria-invalid={isInvalid}
-                              placeholder="https://example.com"
-                              autoComplete="off"
-                              type="url"
                             />
                             {isInvalid && (
                               <FieldError errors={field.state.meta.errors} />
@@ -205,9 +204,10 @@ function RouteComponent() {
                           </Field>
                         )
                       }}
+                      name="url"
                     />
 
-                    <Button type="submit" disabled={isPendingSingle}>
+                    <Button disabled={isPendingSingle} type="submit">
                       {isPendingSingle ? (
                         <>
                           <Loader2Icon className="animate-spin size-4" />
@@ -239,7 +239,6 @@ function RouteComponent() {
                 >
                   <FieldGroup>
                     <bulkForm.Field
-                      name="url"
                       children={(field) => {
                         const isInvalid =
                           field.state.meta.isTouched &&
@@ -248,17 +247,17 @@ function RouteComponent() {
                           <Field data-invalid={isInvalid}>
                             <FieldLabel htmlFor={field.name}>URL</FieldLabel>
                             <Input
+                              aria-invalid={isInvalid}
+                              autoComplete="off"
                               id={field.name}
                               name={field.name}
+                              placeholder="https://example.com"
+                              type="url"
                               value={field.state.value}
                               onBlur={field.handleBlur}
                               onChange={(e) =>
                                 field.handleChange(e.target.value)
                               }
-                              aria-invalid={isInvalid}
-                              placeholder="https://example.com"
-                              autoComplete="off"
-                              type="url"
                             />
                             {isInvalid && (
                               <FieldError errors={field.state.meta.errors} />
@@ -266,9 +265,9 @@ function RouteComponent() {
                           </Field>
                         )
                       }}
+                      name="url"
                     />
                     <bulkForm.Field
-                      name="search"
                       children={(field) => {
                         const isInvalid =
                           field.state.meta.isTouched &&
@@ -279,17 +278,17 @@ function RouteComponent() {
                               Filter (optional)
                             </FieldLabel>
                             <Input
+                              aria-invalid={isInvalid}
+                              autoComplete="off"
                               id={field.name}
                               name={field.name}
+                              placeholder="e.g. Blog, Article, Docs, etc."
+                              type="search"
                               value={field.state.value}
                               onBlur={field.handleBlur}
                               onChange={(e) =>
                                 field.handleChange(e.target.value)
                               }
-                              aria-invalid={isInvalid}
-                              placeholder="e.g. Blog, Article, Docs, etc."
-                              autoComplete="off"
-                              type="search"
                             />
                             {isInvalid && (
                               <FieldError errors={field.state.meta.errors} />
@@ -297,9 +296,10 @@ function RouteComponent() {
                           </Field>
                         )
                       }}
+                      name="search"
                     />
 
-                    <Button type="submit" disabled={isPendingBulk}>
+                    <Button disabled={isPendingBulk} type="submit">
                       {isPendingBulk ? (
                         <>
                           <Loader2Icon className="animate-spin size-4" />
@@ -320,8 +320,8 @@ function RouteComponent() {
                         Found {discoveredLinks.length} URLs
                       </p>
                       <Button
-                        variant="outline"
                         size="sm"
+                        variant="outline"
                         onClick={handleSelectAll}
                       >
                         {discoveredLinks.length === selectedUrls.size
@@ -336,8 +336,8 @@ function RouteComponent() {
                           className="flex gap-3 items-start p-2 rounded-md cursor-pointer hover:bg-muted/50"
                         >
                           <Checkbox
-                            className="mt-0.5"
                             checked={selectedUrls.has(link.url)}
+                            className="mt-0.5"
                             onCheckedChange={() => handleToggleUrl(link.url)}
                           />
                           <div className="flex-1 min-w-0">
@@ -373,9 +373,9 @@ function RouteComponent() {
                     )}
                     <Button
                       className="w-full"
-                      onClick={handleBulkImport}
                       disabled={isPendingBulkImport}
                       type="button"
+                      onClick={handleBulkImport}
                     >
                       {isPendingBulkImport ? (
                         <>

@@ -14,19 +14,19 @@ import {
 import { toast } from 'sonner'
 import { useCompletion } from '@ai-sdk/react'
 
+import { getItemById, saveSummaryAndGenerateTagsFn } from '@/data/items'
+
+import { cn } from '@/lib/utils'
+
+import { MessageResponse } from '@/components/ai-elements/message'
 import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
-
-import { cn } from '@/lib/utils'
-
-import { getItemById, saveSummaryAndGenerateTagsFn } from '@/data/items'
-import { Card, CardContent } from '@/components/ui/card'
-import { MessageResponse } from '@/components/ai-elements/message'
 
 export const Route = createFileRoute('/dashboard/items/$itemId')({
   component: RouteComponent,
@@ -100,8 +100,8 @@ function RouteComponent() {
     <div className="mx-auto space-y-6 w-full max-w-3xl">
       <div className="flex justify-start">
         <Link
-          to="/dashboard/items"
           className={buttonVariants({ variant: 'outline' })}
+          to="/dashboard/items"
         >
           <ArrowLeftIcon />
           Back
@@ -110,12 +110,12 @@ function RouteComponent() {
 
       <div className="overflow-hidden relative w-full rounded-lg aspect-video bg-muted">
         <img
+          alt={item.title ?? 'Thumbnail'}
+          className="object-cover transition-transform duration-300 size-full hover:scale-105"
           src={
             item.ogImage ??
             'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1429&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
           }
-          alt={item.title ?? 'Thumbnail'}
-          className="object-cover transition-transform duration-300 size-full hover:scale-105"
         />
       </div>
 
@@ -143,16 +143,16 @@ function RouteComponent() {
           </span>
         </div>
         <a
-          href={item.url}
-          target="_blank"
-          rel="noopener noreferrer"
           className="inline-flex gap-1 items-center text-sm text-primary hover:underline"
+          href={item.url}
+          rel="noopener noreferrer"
+          target="_blank"
         >
           View Original
           <ExternalLinkIcon className="size-3.5" />
         </a>
         {/* Tags */}
-        {item.tags?.length > 0 && (
+        {item.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {item.tags.map((tag) => (
               <Badge key={tag}>{tag}</Badge>
@@ -179,9 +179,9 @@ function RouteComponent() {
               </div>
               {item.content && !item.summary && (
                 <Button
-                  onClick={handleGenerateSummary}
                   disabled={isLoading}
                   size="sm"
+                  onClick={handleGenerateSummary}
                 >
                   {isLoading ? (
                     <>
@@ -204,7 +204,7 @@ function RouteComponent() {
         {item.content && (
           <Collapsible open={contentOpen} onOpenChange={setContentOpen}>
             <CollapsibleTrigger asChild>
-              <Button variant="outline" className="justify-between w-full">
+              <Button className="justify-between w-full" variant="outline">
                 <span className="font-medium">Full Content</span>
                 <ChevronDownIcon
                   className={cn('transition-transform duration-200 size-4', {

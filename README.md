@@ -39,7 +39,7 @@ In the age of information overload, keeping track of valuable content is difficu
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/recall.git
+   git clone https://github.com/BhushanLagare7/recall.git
    cd recall
    ```
 
@@ -65,10 +65,11 @@ In the age of information overload, keeping track of valuable content is difficu
    ```
 
 4. **Database Setup**
-   Push the schema to your database:
+   Push and Generate the schema to your database:
 
    ```bash
    pnpm db:push
+   pnpm db:generate
    ```
 
 5. **Run the application**

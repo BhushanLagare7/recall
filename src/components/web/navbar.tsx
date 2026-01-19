@@ -1,13 +1,17 @@
 import { Link } from '@tanstack/react-router'
 
-import { buttonVariants } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 import { authClient } from '@/lib/auth-client'
 
+import { Button,buttonVariants  } from '@/components/ui/button'
+
 import { ThemeToggle } from './theme-toggle'
 
-import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
+
+
+
+
 
 export const Navbar = () => {
   const { data: session, isPending } = authClient.useSession()
@@ -30,9 +34,9 @@ export const Navbar = () => {
       <div className="flex justify-between items-center px-4 mx-auto max-w-6xl h-16">
         <div className="flex gap-2 items-center">
           <img
-            src="/tanstack-circle-logo.png"
             alt="TanStack Logo"
             className="size-8"
+            src="/tanstack-circle-logo.png"
           />
           <h1 className="text-lg font-semibold">TanStack Start</h1>
         </div>
@@ -41,36 +45,36 @@ export const Navbar = () => {
           {isPending ? (
             <>
               <Button
-                disabled
                 className={buttonVariants({ variant: 'secondary' })}
+                disabled
               >
                 Logout
               </Button>
-              <Button disabled className={buttonVariants()}>
+              <Button className={buttonVariants()} disabled>
                 Dashboard
               </Button>
             </>
           ) : session ? (
             <>
               <Button
-                onClick={handleSignOut}
                 className={buttonVariants({ variant: 'secondary' })}
+                onClick={handleSignOut}
               >
                 Logout
               </Button>
-              <Link to="/dashboard" className={buttonVariants()}>
+              <Link className={buttonVariants()} to="/dashboard">
                 Dashboard
               </Link>
             </>
           ) : (
             <>
               <Link
-                to="/login"
                 className={buttonVariants({ variant: 'secondary' })}
+                to="/login"
               >
                 Login
               </Link>
-              <Link to="/signup" className={buttonVariants()}>
+              <Link className={buttonVariants()} to="/signup">
                 Get Started
               </Link>
             </>

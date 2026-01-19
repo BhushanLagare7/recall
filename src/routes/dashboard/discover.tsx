@@ -1,3 +1,15 @@
+import { useState, useTransition } from 'react'
+import { useForm } from '@tanstack/react-form'
+import { createFileRoute } from '@tanstack/react-router'
+
+import { Loader2, Search, Sparkles } from 'lucide-react'
+import { toast } from 'sonner'
+import type { SearchResultWeb } from '@mendable/firecrawl-js'
+
+import type { BulkScrapeProgress} from '@/data/items';
+import { bulkScrapeUrlsFn, searchWebFn } from '@/data/items'
+import { searchSchema } from '@/schemas/import'
+
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -15,14 +27,6 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
-import { BulkScrapeProgress, bulkScrapeUrlsFn, searchWebFn } from '@/data/items'
-import { searchSchema } from '@/schemas/import'
-import { SearchResultWeb } from '@mendable/firecrawl-js'
-import { useForm } from '@tanstack/react-form'
-import { createFileRoute } from '@tanstack/react-router'
-import { Loader2, Search, Sparkles } from 'lucide-react'
-import { useState, useTransition } from 'react'
-import { toast } from 'sonner'
 
 export const Route = createFileRoute('/dashboard/discover')({
   component: RouteComponent,
@@ -165,7 +169,6 @@ function RouteComponent() {
             >
               <FieldGroup>
                 <form.Field
-                  name="query"
                   children={(field) => {
                     const isInvalid =
                       field.state.meta.isTouched && !field.state.meta.isValid
@@ -175,14 +178,14 @@ function RouteComponent() {
                           Search Query
                         </FieldLabel>
                         <Input
+                          aria-invalid={isInvalid}
+                          autoComplete="off"
                           id={field.name}
                           name={field.name}
+                          placeholder="e.g., React Server Components tutorial"
                           value={field.state.value}
                           onBlur={field.handleBlur}
                           onChange={(e) => field.handleChange(e.target.value)}
-                          aria-invalid={isInvalid}
-                          placeholder="e.g., React Server Components tutorial"
-                          autoComplete="off"
                         />
                         {isInvalid && (
                           <FieldError errors={field.state.meta.errors} />
@@ -190,6 +193,7 @@ function RouteComponent() {
                       </Field>
                     )
                   }}
+                  name="query"
                 />
                 <Button disabled={isPending} type="submit">
                   {isPending ? (
@@ -215,7 +219,7 @@ function RouteComponent() {
                     Found {searchResults.length} URLs
                   </p>
 
-                  <Button onClick={handleSelectAll} variant="outline" size="sm">
+                  <Button size="sm" variant="outline" onClick={handleSelectAll}>
                     {selectedUrls.size === searchResults.length
                       ? 'Deselect All'
                       : 'Select All'}
@@ -230,8 +234,8 @@ function RouteComponent() {
                     >
                       <Checkbox
                         checked={selectedUrls.has(link.url)}
-                        onCheckedChange={() => handleToggleUrl(link.url)}
                         className="mt-0.5"
+                        onCheckedChange={() => handleToggleUrl(link.url)}
                       />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
@@ -266,10 +270,10 @@ function RouteComponent() {
                 )}
 
                 <Button
-                  disabled={bulkIsPending}
-                  onClick={handleBulkImport}
                   className="w-full"
+                  disabled={bulkIsPending}
                   type="button"
+                  onClick={handleBulkImport}
                 >
                   {bulkIsPending ? (
                     <>

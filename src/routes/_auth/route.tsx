@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
+import { createFileRoute,Link,Outlet } from '@tanstack/react-router'
 
 import { ArrowLeftIcon } from 'lucide-react'
 
@@ -12,7 +12,7 @@ function RouteComponent() {
   return (
     <div className="min-h-screen">
       <div className="absolute top-8 left-8">
-        <Link to="/" className={buttonVariants({ variant: 'secondary' })}>
+        <Link className={buttonVariants({ variant: 'secondary' })} to="/">
           <ArrowLeftIcon className="size-4" />
           Back to Home
         </Link>

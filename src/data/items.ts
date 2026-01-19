@@ -1,18 +1,22 @@
+import { notFound } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
+
+import { generateText } from 'ai'
+import z from 'zod'
+import type { SearchResultWeb } from '@mendable/firecrawl-js'
+
 import { prisma } from '@/db'
-import { firecrawl } from '@/lib/firecrawl'
+import { authFnMiddleware } from '@/middlewares/auth'
+import type {
+  extractSchema} from '@/schemas/import';
 import {
   bulkImportSchema,
-  extractSchema,
   importSchema,
   searchSchema,
 } from '@/schemas/import'
-import { createServerFn } from '@tanstack/react-start'
-import z from 'zod'
-import { authFnMiddleware } from '@/middlewares/auth'
-import { notFound } from '@tanstack/react-router'
-import { generateText } from 'ai'
+
+import { firecrawl } from '@/lib/firecrawl'
 import { openrouter } from '@/lib/open-router'
-import { SearchResultWeb } from '@mendable/firecrawl-js'
 
 export const scrapeUrlFn = createServerFn({ method: 'POST' })
   .middleware([authFnMiddleware])
@@ -32,7 +36,7 @@ export const scrapeUrlFn = createServerFn({ method: 'POST' })
           'markdown',
           {
             type: 'json',
-            //schema: extractSchema,
+            // schema: extractSchema,
             prompt: 'please extract the author and also publishedAt timestamp',
           },
         ],
@@ -132,7 +136,7 @@ export const bulkScrapeUrlsFn = createServerFn({ method: 'POST' })
             'markdown',
             {
               type: 'json',
-              //schema: extractSchema,
+              // schema: extractSchema,
               prompt:
                 'please extract the author and also publishedAt timestamp',
             },
@@ -288,5 +292,5 @@ export const searchWebFn = createServerFn({ method: 'POST' })
       url: (item as SearchResultWeb).url,
       title: (item as SearchResultWeb).title,
       description: (item as SearchResultWeb).description,
-    })) as SearchResultWeb[]
+    })) as Array<SearchResultWeb>
   })

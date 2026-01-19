@@ -1,8 +1,12 @@
 import { useTransition } from 'react'
-import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
+import { Link, useNavigate } from '@tanstack/react-router'
 
 import { toast } from 'sonner'
+
+import { loginSchema } from '@/schemas/auth'
+
+import { authClient } from '@/lib/auth-client'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -20,9 +24,6 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-
-import { loginSchema } from '@/schemas/auth'
-import { authClient } from '@/lib/auth-client'
 
 export function LoginForm() {
   const navigate = useNavigate()
@@ -72,7 +73,6 @@ export function LoginForm() {
         >
           <FieldGroup>
             <form.Field
-              name="email"
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid
@@ -80,15 +80,15 @@ export function LoginForm() {
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                     <Input
+                      aria-invalid={isInvalid}
+                      autoComplete="off"
                       id={field.name}
                       name={field.name}
+                      placeholder="m@example.com"
+                      type="email"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                      placeholder="m@example.com"
-                      autoComplete="off"
-                      type="email"
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -96,9 +96,9 @@ export function LoginForm() {
                   </Field>
                 )
               }}
+              name="email"
             />
             <form.Field
-              name="password"
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid
@@ -106,15 +106,15 @@ export function LoginForm() {
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                     <Input
+                      aria-invalid={isInvalid}
+                      autoComplete="off"
                       id={field.name}
                       name={field.name}
+                      placeholder="********"
+                      type="password"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                      placeholder="********"
-                      autoComplete="off"
-                      type="password"
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -122,11 +122,12 @@ export function LoginForm() {
                   </Field>
                 )
               }}
+              name="password"
             />
             <Field>
               <Button
-                type="submit"
                 disabled={isPending || form.state.isSubmitting}
+                type="submit"
               >
                 {isPending || form.state.isSubmitting
                   ? 'Logging in...'

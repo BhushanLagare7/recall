@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { streamText } from 'ai'
 
 import { prisma } from '@/db'
+
 import { openrouter } from '@/lib/open-router'
 
 export const Route = createFileRoute('/api/ai/summary')({
@@ -38,7 +39,7 @@ export const Route = createFileRoute('/api/ai/summary')({
           prompt: `Please summarize the following content:\n\n${prompt}`,
         })
 
-        //Return the stream in the format useCompletion expects
+        // Return the stream in the format useCompletion expects
         return result.toTextStreamResponse()
       },
     },

@@ -1,5 +1,7 @@
 import * as React from "react"
 
+import { BellIcon, BluetoothIcon, CreditCardIcon, DownloadIcon, EyeIcon, FileCodeIcon, FileIcon, FileTextIcon, FolderIcon, FolderOpenIcon, FolderSearchIcon, HelpCircleIcon, KeyboardIcon, LanguagesIcon, LayoutIcon, LogOutIcon,MailIcon, MonitorIcon, MoonIcon, MoreHorizontalIcon, MoreVerticalIcon, PaletteIcon, PlusIcon, SaveIcon, SettingsIcon, ShieldIcon, SunIcon, UserIcon } from "lucide-react"
+
 import {
   Example,
   ExampleWrapper,
@@ -63,7 +65,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { PlusIcon, BluetoothIcon, MoreVerticalIcon, FileIcon, FolderIcon, FolderOpenIcon, FileCodeIcon, MoreHorizontalIcon, FolderSearchIcon, SaveIcon, DownloadIcon, EyeIcon, LayoutIcon, PaletteIcon, SunIcon, MoonIcon, MonitorIcon, UserIcon, CreditCardIcon, SettingsIcon, KeyboardIcon, LanguagesIcon, BellIcon, MailIcon, ShieldIcon, HelpCircleIcon, FileTextIcon, LogOutIcon } from "lucide-react"
 
 export function ComponentExample() {
   return (
@@ -76,14 +77,14 @@ export function ComponentExample() {
 
 function CardExample() {
   return (
-    <Example title="Card" className="justify-center items-center">
+    <Example className="justify-center items-center" title="Card">
       <Card className="overflow-hidden relative pt-0 w-full max-w-sm">
         <div className="absolute inset-0 z-30 opacity-50 bg-primary aspect-video mix-blend-color" />
         <img
-          src="https://images.unsplash.com/photo-1604076850742-4c7221f3101b?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Photo by mymind on Unsplash"
-          title="Photo by mymind on Unsplash"
           className="object-cover relative z-20 w-full aspect-video brightness-60 grayscale"
+          src="https://images.unsplash.com/photo-1604076850742-4c7221f3101b?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          title="Photo by mymind on Unsplash"
         />
         <CardHeader>
           <CardTitle>Observability Plus is replacing Monitoring</CardTitle>
@@ -119,7 +120,7 @@ function CardExample() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Badge variant="secondary" className="ml-auto">
+          <Badge className="ml-auto" variant="secondary">
             Warning
           </Badge>
         </CardFooter>
@@ -153,7 +154,7 @@ function FormExample() {
           <CardAction>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button size="icon" variant="ghost">
                   <MoreVerticalIcon
                   />
                   <span className="sr-only">More options</span>
@@ -480,7 +481,7 @@ function FormExample() {
               </Field>
               <Field orientation="horizontal">
                 <Button type="submit">Submit</Button>
-                <Button variant="outline" type="button">
+                <Button type="button" variant="outline">
                   Cancel
                 </Button>
               </Field>

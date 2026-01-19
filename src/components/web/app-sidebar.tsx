@@ -4,6 +4,8 @@ import { Link, linkOptions } from '@tanstack/react-router'
 
 import { BookmarkIcon, CompassIcon, ImportIcon } from 'lucide-react'
 
+import type { NavPrimaryProps, NavUserProps } from '@/lib/types'
+
 import {
   Sidebar,
   SidebarContent,
@@ -14,9 +16,9 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
+
 import { NavPrimary } from './nav-primary'
 import { NavUser } from './nav-user'
-import { NavPrimaryProps, NavUserProps } from '@/lib/types'
 
 const navItems: NavPrimaryProps['items'] = linkOptions([
   {
@@ -45,8 +47,8 @@ export function AppSidebar({ user }: NavUserProps) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link to="/dashboard" className="flex gap-3 items-center">
+            <SidebarMenuButton asChild size="lg">
+              <Link className="flex gap-3 items-center" to="/dashboard">
                 <div className="flex justify-center items-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground aspect-square size-8">
                   <BookmarkIcon className="size-4" />
                 </div>

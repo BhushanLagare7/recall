@@ -1,4 +1,6 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute,Outlet } from '@tanstack/react-router'
+
+import { getSessionFn } from '@/data/session'
 
 import { Separator } from '@/components/ui/separator'
 import {
@@ -7,8 +9,6 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/web/app-sidebar'
-
-import { getSessionFn } from '@/data/session'
 
 export const Route = createFileRoute('/dashboard')({
   component: RouteComponent,
@@ -30,8 +30,8 @@ function RouteComponent() {
           <div className="flex gap-2 items-center px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator
-              orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
+              orientation="vertical"
             />
           </div>
         </header>

@@ -1,12 +1,17 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { createRootRoute,HeadContent,Scripts } from '@tanstack/react-router'
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { ThemeProvider } from '@/lib/theme-provider'
 
 import { Toaster } from '@/components/ui/sonner'
 
 import appCss from '../styles.css?url'
+
+
+
+
+
 
 export const Route = createRootRoute({
   head: () => ({

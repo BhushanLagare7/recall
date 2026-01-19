@@ -2,6 +2,8 @@
 
 import { Link } from '@tanstack/react-router'
 
+import type { NavPrimaryProps } from '@/lib/types'
+
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -9,8 +11,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-
-import { NavPrimaryProps } from '@/lib/types'
 
 export function NavPrimary({ items }: NavPrimaryProps) {
   return (
@@ -22,9 +22,9 @@ export function NavPrimary({ items }: NavPrimaryProps) {
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild size="sm">
                   <Link
-                    to={item.to}
                     activeOptions={item.activeOptions}
                     activeProps={{ 'data-active': true }}
+                    to={item.to}
                   >
                     <item.icon />
                     <span>{item.title}</span>
