@@ -31,33 +31,34 @@ import {
 export const Route = createFileRoute('/dashboard/items/$itemId')({
   component: RouteComponent,
   loader: ({ params }) => getItemById({ data: { id: params.itemId } }),
-  head: ({ loaderData }) => ({
-    meta: [
-      {
-        title: loaderData?.title ?? 'Item Details',
-      },
-      {
-        property: 'og:title',
-        content: loaderData?.title ?? 'Item Details',
-      },
-      {
-        property: 'og:description',
-        content: loaderData?.summary ?? 'Item Summary',
-      },
-      {
-        property: 'og:image',
-        content: loaderData?.ogImage ?? '',
-      },
-      {
-        property: 'twitter:title',
-        content: loaderData?.title ?? 'Item Details',
-      },
-      {
-        property: 'twitter:description',
-        content: loaderData?.summary ?? 'Item Summary',
-      },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const title = loaderData?.title ?? 'Item Details'
+    const description =
+      loaderData?.summary ??
+      'View saved article details and AI-generated summary'
+    const image = loaderData?.ogImage
+
+    return {
+      meta: [
+        { title },
+        { name: 'description', content: description },
+        { property: 'og:title', content: title },
+        { property: 'og:description', content: description },
+        { property: 'og:type', content: 'article' },
+        ...(image ? [{ property: 'og:image', content: image }] : []),
+        {
+          name: 'twitter:card',
+          content: image ? 'summary_large_image' : 'summary',
+        },
+        { name: 'twitter:title', content: title },
+        { name: 'twitter:description', content: description },
+        ...(image ? [{ name: 'twitter:image', content: image }] : []),
+        ...(loaderData?.author
+          ? [{ name: 'author', content: loaderData.author }]
+          : []),
+      ],
+    }
+  },
 })
 
 function RouteComponent() {

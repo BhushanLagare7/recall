@@ -4,15 +4,10 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { GlobeIcon, LinkIcon, Loader2Icon } from 'lucide-react'
 import { toast } from 'sonner'
-import type {SearchResultWeb} from '@mendable/firecrawl-js';
+import type { SearchResultWeb } from '@mendable/firecrawl-js'
 
-import type {
-  BulkScrapeProgress} from '@/data/items';
-import {
-  bulkScrapeUrlsFn,
-  mapUrlFn,
-  scrapeUrlFn,
-} from '@/data/items'
+import type { BulkScrapeProgress } from '@/data/items'
+import { bulkScrapeUrlsFn, mapUrlFn, scrapeUrlFn } from '@/data/items'
 import { bulkImportSchema, importSchema } from '@/schemas/import'
 
 import { Button } from '@/components/ui/button'
@@ -36,10 +31,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export const Route = createFileRoute('/dashboard/import')({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      { title: 'Import Content' },
+      {
+        name: 'description',
+        content:
+          'Import and save web pages to your library. Scrape single URLs or bulk import from websites.',
+      },
+      { property: 'og:title', content: 'Import Content' },
+      {
+        property: 'og:description',
+        content:
+          'Import and save web pages to your library. Scrape single URLs or bulk import from websites.',
+      },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary' },
+      { name: 'twitter:title', content: 'Import Content' },
+      {
+        name: 'twitter:description',
+        content:
+          'Import and save web pages to your library. Scrape single URLs or bulk import from websites.',
+      },
+    ],
+  }),
 })
 
 function RouteComponent() {
-  const [discoveredLinks, setDiscoveredLinks] = useState<Array<SearchResultWeb>>([])
+  const [discoveredLinks, setDiscoveredLinks] = useState<
+    Array<SearchResultWeb>
+  >([])
   const [selectedUrls, setSelectedUrls] = useState<Set<string>>(new Set())
   const [progress, setProgress] = useState<BulkScrapeProgress | null>(null)
 

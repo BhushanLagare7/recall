@@ -195,16 +195,25 @@ export const Route = createFileRoute('/dashboard/items/')({
   validateSearch: zodValidator(itemSearchSchema),
   head: () => ({
     meta: [
+      { title: 'Saved Items' },
       {
-        title: 'Saved Items',
+        name: 'description',
+        content:
+          'Browse and manage your saved articles, bookmarks, and content.',
       },
-      {
-        property: 'og:title',
-        content: 'Saved Items',
-      },
+      { property: 'og:title', content: 'Saved Items' },
       {
         property: 'og:description',
-        content: 'Your saved articles and content!',
+        content:
+          'Browse and manage your saved articles, bookmarks, and content.',
+      },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary' },
+      { name: 'twitter:title', content: 'Saved Items' },
+      {
+        name: 'twitter:description',
+        content:
+          'Browse and manage your saved articles, bookmarks, and content.',
       },
     ],
   }),

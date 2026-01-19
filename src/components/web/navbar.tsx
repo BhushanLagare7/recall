@@ -4,14 +4,9 @@ import { toast } from 'sonner'
 
 import { authClient } from '@/lib/auth-client'
 
-import { Button,buttonVariants  } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 
 import { ThemeToggle } from './theme-toggle'
-
-
-
-
-
 
 export const Navbar = () => {
   const { data: session, isPending } = authClient.useSession()
@@ -38,7 +33,7 @@ export const Navbar = () => {
             className="size-8"
             src="/tanstack-circle-logo.png"
           />
-          <h1 className="text-lg font-semibold">TanStack Start</h1>
+          <h1 className="text-lg font-semibold">Recall</h1>
         </div>
         <div className="flex gap-3 items-center">
           <ThemeToggle />
